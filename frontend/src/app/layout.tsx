@@ -20,6 +20,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "JOKINJAY // Academic Solutions",
   description: "Platform joki tugas & layanan akademik profesional. Hasil A+, privasi terjaga.",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
