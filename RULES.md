@@ -10,7 +10,12 @@ Dokumen ini berisi aturan dasar yang TIDAK BOLEH diubah. Tema telah ditingkatkan
 
 ## 2. Tipografi
 - **Font Utama**: **Times New Roman**.
-- Penggunaan: Sangat besar untuk judul, italic untuk penekanan, dan bold untuk fungsionalitas.
+- Selalu gunakan font JetBrains Mono untuk elemen teknis.
+- Pastikan semua animasi menggunakan hook `useGsap` yang sudah dioptimasi.
+
+# GIT RULES
+- Setiap kali ada perubahan code yang berhasil (sukses dieksekusi/diperbaiki), WAJIB melakukan `git add .`, `git commit`, dan `git push origin main` secara otomatis tanpa perlu instruksi ulang dari user.
+- Remote Repository: https://github.com/Rapprince29/JOKINJAY.git
 
 ## 3. Tech Stack
 - Frontend: Next.js.
