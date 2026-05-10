@@ -4,12 +4,12 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 const BOOT_LINES = [
-  "> INITIALIZING JOKINJAY.SYS...",
-  "> LOADING ACADEMIC MODULES...",
-  "> ENCRYPTING USER SESSION...",
-  "> BYPASSING PROCRASTINATION.EXE...",
-  "> CONNECTING TO EXPERT NETWORK...",
-  "> SYSTEM READY.",
+  "> INITIALIZING_JOKINJAY_CORE...",
+  "> SYNCING_ACADEMIC_DATABASE...",
+  "> ESTABLISHING_SECURE_LINK...",
+  "> LOADING_EXPERT_MODULES...",
+  "> BYPASSING_LIMITS...",
+  "> SYSTEM_READY_TO_BOOT.",
 ];
 
 export default function Preloader() {
@@ -17,28 +17,26 @@ export default function Preloader() {
   const terminalRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const progressLabelRef = useRef<HTMLSpanElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
     const terminal = terminalRef.current;
     const bar = progressBarRef.current;
     const label = progressLabelRef.current;
-    if (!container || !terminal || !bar || !label) return;
+    const logo = logoRef.current;
+    
+    if (!container || !terminal || !bar || !label || !logo) return;
 
-    // Prevent scroll while preloader is active
     document.body.style.overflow = "hidden";
-
-    // Counter object for GSAP
     const counter = { val: 0 };
 
-    // ── Build timeline ──────────────────────────────────────────────────
     const tl = gsap.timeline({
       onComplete: () => {
-        // Slide the preloader UP and away
         gsap.to(container, {
           yPercent: -100,
-          duration: 0.75,
-          ease: "power3.inOut",
+          duration: 1,
+          ease: "expo.inOut",
           onComplete: () => {
             container.style.display = "none";
             document.body.style.overflow = "";
@@ -47,37 +45,36 @@ export default function Preloader() {
       },
     });
 
-    // 1. Fade in logo + corner brackets
-    tl.from(".pl-logo", { y: 20, opacity: 0, duration: 0.5, ease: "power2.out", force3D: true });
-    tl.from(".pl-corner", { opacity: 0, duration: 0.3, stagger: 0.05, ease: "none" }, "-=0.2");
-
-    // 2. Add each boot line sequentially
+    // 1. Initial Glitch Reveal
+    tl.fromTo(logo, { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power4.out" });
+    
+    // 2. Loop through boot lines with "WOW" factor
     BOOT_LINES.forEach((text, i) => {
       tl.add(() => {
         const line = document.createElement("div");
-        line.className = "font-mono text-xs tracking-wider flex items-center gap-3 pl-line";
+        line.className = "font-mono text-[10px] tracking-[0.2em] mb-1 pl-line flex items-center gap-3";
         const isReady = text.includes("READY");
-        line.innerHTML = `
-          <span style="color: ${isReady ? "var(--green)" : "var(--cyan)"}" class="${isReady ? "font-bold" : "opacity-70"}">
-            ${text}
-          </span>
-        `;
+        
+        line.innerHTML = `<span style="color: ${isReady ? "#00ff9d" : "#00e5ff"}">${text}</span>`;
         terminal.appendChild(line);
-        gsap.from(line, { x: -10, opacity: 0, duration: 0.25, ease: "power1.out", force3D: true });
+        
+        // Visual shake on each log
+        gsap.fromTo(container, { x: 2 }, { x: 0, duration: 0.1, repeat: 1 });
+        gsap.from(line, { x: -20, opacity: 0, duration: 0.2 });
 
-        // Update progress bar & label
         const pct = Math.round(((i + 1) / BOOT_LINES.length) * 100);
-        gsap.to(bar, { width: `${pct}%`, duration: 0.3, ease: "power1.out" });
+        gsap.to(bar, { width: `${pct}%`, duration: 0.4, ease: "power2.out" });
         gsap.to(counter, {
           val: pct,
-          duration: 0.3,
-          onUpdate: () => { if (label) label.textContent = `${Math.round(counter.val)}%`; },
+          duration: 0.4,
+          onUpdate: () => { label.textContent = `${Math.round(counter.val)}%`; },
         });
-      }, `+=${0.38}`);
+      }, `+=${0.4}`);
     });
 
-    // 3. Short hold at 100% before exit
-    tl.add(() => {}, "+=0.6");
+    // 3. Final Flash
+    tl.to(logo, { textShadow: "0 0 30px #00e5ff", color: "#fff", duration: 0.3 });
+    tl.to(logo, { opacity: 0, scale: 1.1, duration: 0.4 }, "+=0.5");
 
     return () => {
       tl.kill();
@@ -88,42 +85,55 @@ export default function Preloader() {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[10000] bg-[#0a0a0a] flex flex-col items-start justify-center px-8 md:px-20 overflow-hidden"
-      style={{
-        backgroundImage:
-          "linear-gradient(rgba(0,229,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.015) 1px, transparent 1px)",
-        backgroundSize: "40px 40px",
-      }}
+      className="fixed inset-0 z-[10000] bg-[#050505] flex flex-col items-center justify-center overflow-hidden"
     >
-      {/* Corner Brackets */}
-      {["top-8 left-8 border-t-2 border-l-2", "top-8 right-8 border-t-2 border-r-2", "bottom-8 left-8 border-b-2 border-l-2", "bottom-8 right-8 border-b-2 border-r-2"].map((cls, i) => (
-        <div key={i} className={`pl-corner absolute w-8 h-8 ${cls}`} style={{ borderColor: "var(--cyan)" }} />
-      ))}
+      {/* CRT Scanline Effect */}
+      <div className="absolute inset-0 pointer-events-none z-10" 
+           style={{ 
+             background: "linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03))",
+             backgroundSize: "100% 3px, 2px 100%" 
+           }} 
+      />
 
-      <div className="w-full max-w-2xl">
-        {/* Logo */}
-        <div className="pl-logo mb-8">
-          <div className="text-[10px] font-mono text-[#444] mb-2 tracking-widest">SYS:BOOT // v2.0.1</div>
-          <div className="text-5xl md:text-7xl font-mono font-black text-[#e4e4e4] tracking-tight">
-            JOKI<span style={{ color: "var(--cyan)" }}>JAY</span>
-          </div>
+      <div className="w-full max-w-lg px-10 relative">
+        {/* Branding */}
+        <div ref={logoRef} className="text-center mb-16">
+          <div className="font-mono text-[9px] text-cyan/30 tracking-[0.5em] mb-4 uppercase">System_Link_Established</div>
+          <h1 className="font-mono font-black text-5xl md:text-7xl tracking-tighter text-[#222] italic">
+            JOKI<span className="text-white">JAY</span>
+          </h1>
         </div>
 
         {/* Terminal output */}
-        <div ref={terminalRef} className="space-y-1.5 mb-8 min-h-[120px]" />
+        <div ref={terminalRef} className="h-24 mb-10" />
 
-        {/* Progress */}
-        <div className="h-[2px] bg-[#1a1a1a] w-full overflow-hidden">
-          <div
-            ref={progressBarRef}
-            className="h-full"
-            style={{ width: "0%", background: "var(--cyan)", willChange: "width" }}
-          />
+        {/* Progress System */}
+        <div className="relative pt-1">
+          <div className="flex mb-2 items-center justify-between">
+            <div>
+              <span className="text-[10px] font-mono font-semibold inline-block py-1 px-2 uppercase rounded-full text-cyan bg-cyan/10">
+                BOOTING_PROCESS
+              </span>
+            </div>
+            <div className="text-right">
+              <span ref={progressLabelRef} className="text-[10px] font-mono font-semibold inline-block text-cyan">
+                0%
+              </span>
+            </div>
+          </div>
+          <div className="overflow-hidden h-[2px] mb-4 text-xs flex bg-white/5">
+            <div
+              ref={progressBarRef}
+              style={{ width: "0%" }}
+              className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-cyan"
+            ></div>
+          </div>
         </div>
-        <div className="flex justify-between items-center mt-2">
-          <span className="font-mono text-[9px] text-[#444] tracking-widest">LOADING</span>
-          <span ref={progressLabelRef} className="font-mono text-[9px]" style={{ color: "var(--cyan)" }}>0%</span>
-        </div>
+      </div>
+
+      {/* Decorative text */}
+      <div className="absolute bottom-10 font-mono text-[8px] text-white/10 tracking-[1em] uppercase">
+        Aurora_Cybernetics // 2026
       </div>
     </div>
   );

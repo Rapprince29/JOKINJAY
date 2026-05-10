@@ -12,7 +12,20 @@
           "package_name": "com.jokinjay.jokinjay_mobile"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "558656482475-s972hhtkqgoi5v10j0177mfgn9r54o2r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jokinjay.jokinjay_mobile",
+            "certificate_hash": "f106c73256295f840edd1853182923bb9ec4b262"
+          }
+        },
+        {
+          "client_id": "558656482475-72e07ftjqn48n4me8omrj44l34ib2j1l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC1ygc1ZEdguOX7pRfVRgcTCemIDt0AH7k"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558656482475-72e07ftjqn48n4me8omrj44l34ib2j1l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
