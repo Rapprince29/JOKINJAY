@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart' as g_auth;
+import 'package:google_sign_in/google_sign_in.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -113,18 +113,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
-  // Gunakan inisialisasi yang lebih aman untuk versi terbaru
-  final g_auth.GoogleSignIn _googleSignIn = g_auth.GoogleSignIn(
-    scopes: ['email', 'profile'],
-  );
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
     try {
-      final g_auth.GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser != null) {
-        // Pada versi terbaru, authentication adalah Future
-        final g_auth.GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
         
         final credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
@@ -245,7 +241,7 @@ class DashboardScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout, color: Colors.red),
             onPressed: () async {
-              await g_auth.GoogleSignIn().signOut();
+              await GoogleSignIn().signOut();
               await FirebaseAuth.instance.signOut();
               if (context.mounted) {
                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
