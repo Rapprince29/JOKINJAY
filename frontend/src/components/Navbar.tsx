@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { gsap } from "gsap";
 
+import { useSession, signOut } from "next-auth/react";
+
 interface NavbarProps {
   variant?: "main" | "dashboard" | "admin" | "joki";
   userName?: string;
@@ -12,6 +14,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ variant = "main", userName, userRole }: NavbarProps) {
+  const { data: session, status } = useSession();
   const [isOpen, setIsOpen] = useState(false);
 
   // Animasi menu saat terbuka
@@ -143,13 +146,22 @@ export default function Navbar({ variant = "main", userName, userRole }: NavbarP
             </>
           )}
 
-          <Link 
-            href="/login" 
-            onClick={toggleMenu}
-            className="mobile-menu-item opacity-0 -translate-x-4 btn btn-primary mt-4"
-          >
-            [ {sessionStorage.getItem("user") ? "LOGOUT" : "ACCESS_PORTAL"} ]
-          </Link>
+          {status === "authenticated" ? (
+            <button 
+              onClick={() => { signOut({ callbackUrl: "/" }); toggleMenu(); }}
+              className="mobile-menu-item opacity-0 -translate-x-4 btn btn-primary mt-4 w-full max-w-[200px] justify-center"
+            >
+              [ LOGOUT ]
+            </button>
+          ) : (
+            <Link 
+              href="/login" 
+              onClick={toggleMenu}
+              className="mobile-menu-item opacity-0 -translate-x-4 btn btn-primary mt-4 w-full max-w-[200px] justify-center"
+            >
+              [ ACCESS_PORTAL ]
+            </Link>
+          )}
 
           <div className="mt-20 font-mono text-[8px] text-[#222] tracking-widest uppercase">
             System v2.0.4 // Aurora Cybernetics
