@@ -18,15 +18,90 @@ class JokinjayApp extends StatelessWidget {
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF0A0A0A),
         primaryColor: const Color(0xFF00E5FF),
-        textTheme: GoogleFonts.jetbrainsMonoTextTheme(
+        textTheme: GoogleFonts.jetBrainsMonoTextTheme(
           Theme.of(context).textTheme.apply(bodyColor: Colors.white, displayColor: Colors.white),
         ),
       ),
-      home: const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }
 
+// ── SPLASH SCREEN ──
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Pindah ke Login setelah 3 detik
+    Future.delayed(const Duration(seconds: 4), () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Logo Image with Animation
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.2)),
+                color: const Color(0xFF111111),
+              ),
+              child: ColorFiltered(
+                colorFilter: const ColorFilter.matrix([
+                  -1, 0, 0, 0, 255,
+                  0, -1, 0, 0, 255,
+                  0, 0, -1, 0, 255,
+                  0, 0, 0, 1, 0,
+                ]), // Invert effect to make black logo white
+                child: Image.asset(
+                  'assets/logo.jpeg',
+                  width: 100,
+                  height: 100,
+                ),
+              ),
+            ).animate()
+             .fadeIn(duration: 1.seconds)
+             .scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack)
+             .shimmer(delay: 1.5.seconds, color: const Color(0xFF00E5FF).withOpacity(0.5)),
+
+            const SizedBox(height: 30),
+            
+            // Loading Text
+            Text(
+              'INITIALIZING_SYSTEM...',
+              style: GoogleFonts.jetBrainsMono(
+                fontSize: 10,
+                letterSpacing: 5,
+                color: const Color(0xFF00E5FF),
+              ),
+            ).animate(onPlay: (c) => c.repeat())
+             .fade(duration: 800.ms),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── LOGIN SCREEN ──
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -60,92 +135,106 @@ class _LoginScreenState extends State<LoginScreen> {
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 80),
-                  
-                  // Logo & Header
-                  Row(
-                    children: [
-                      Container(
-                        width: 12,
-                        height: 12,
-                        color: const Color(0xFF00E5FF),
-                      ).animate(onPlay: (controller) => controller.repeat())
-                       .pulse(duration: 1000.ms),
-                      const SizedBox(width: 15),
-                      Text(
-                        'SYSTEM_ACCESS_v2.0',
-                        style: GoogleFonts.jetbrainsMono(
-                          fontSize: 10,
-                          letterSpacing: 4,
-                          color: Colors.grey[600],
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 60),
+                    
+                    // Logo Image in Login
+                    ColorFiltered(
+                      colorFilter: const ColorFilter.matrix([
+                        -1, 0, 0, 0, 255,
+                        0, -1, 0, 0, 255,
+                        0, 0, -1, 0, 255,
+                        0, 0, 0, 1, 0,
+                      ]), // Invert effect
+                      child: Image.asset('assets/logo.jpeg', width: 40, height: 40),
+                    ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.2),
+
+                    const SizedBox(height: 20),
+                    
+                    Row(
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          color: const Color(0xFF00E5FF),
+                        ).animate(onPlay: (controller) => controller.repeat(reverse: true))
+                         .fade(duration: 500.ms),
+                        const SizedBox(width: 12),
+                        Text(
+                          'SYSTEM_ACCESS_v2.0',
+                          style: GoogleFonts.jetBrainsMono(
+                            fontSize: 10,
+                            letterSpacing: 4,
+                            color: Colors.grey[600],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  
-                  const SizedBox(height: 20),
-                  
-                  Text(
-                    'JOKIN\nJAY_',
-                    style: GoogleFonts.jetbrainsMono(
-                      fontSize: 60,
-                      fontWeight: FontWeight.black,
-                      height: 0.9,
-                      letterSpacing: -5,
+                      ],
                     ),
-                  ).animate().fadeIn(duration: 800.ms).slideX(begin: -0.2),
-                  
-                  const SizedBox(height: 60),
-                  
-                  // Login Form
-                  const CyberTextField(label: 'USER_ID', hint: 'Email or Username'),
-                  const SizedBox(height: 20),
-                  const CyberTextField(label: 'SECRET_KEY', hint: 'Password', isPassword: true),
-                  
-                  const SizedBox(height: 40),
-                  
-                  // Login Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 55,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00E5FF),
-                        foregroundColor: Colors.black,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
-                        ),
+                    
+                    const SizedBox(height: 15),
+                    
+                    Text(
+                      'JOKIN\nJAY_',
+                      style: GoogleFonts.jetBrainsMono(
+                        fontSize: 60,
+                        fontWeight: FontWeight.w900,
+                        height: 0.9,
+                        letterSpacing: -5,
                       ),
-                      child: Text(
-                        '[ INITIATE_SESSION ]',
-                        style: GoogleFonts.jetbrainsMono(
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
+                    ).animate().fadeIn(duration: 800.ms).slideX(begin: -0.2),
+                    
+                    const SizedBox(height: 50),
+                    
+                    // Login Form
+                    const CyberTextField(label: 'USER_ID', hint: 'Email or Username'),
+                    const SizedBox(height: 20),
+                    const CyberTextField(label: 'SECRET_KEY', hint: 'Password', isPassword: true),
+                    
+                    const SizedBox(height: 40),
+                    
+                    // Login Button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 55,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF00E5FF),
+                          foregroundColor: Colors.black,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
                         ),
-                      ),
-                    ).animate().shimmer(delay: 2.seconds, duration: 1.seconds),
-                  ),
-                  
-                  const SizedBox(height: 20),
-                  
-                  Center(
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        '// CONTINUE WITH GOOGLE',
-                        style: GoogleFonts.jetbrainsMono(
-                          color: Colors.grey[500],
-                          fontSize: 10,
-                          letterSpacing: 2,
+                        child: Text(
+                          '[ INITIATE_SESSION ]',
+                          style: GoogleFonts.jetBrainsMono(
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 2,
+                          ),
+                        ),
+                      ).animate().shimmer(delay: 2.seconds, duration: 1.seconds),
+                    ),
+                    
+                    const SizedBox(height: 20),
+                    
+                    Center(
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          '// CONTINUE WITH GOOGLE',
+                          style: GoogleFonts.jetBrainsMono(
+                            color: Colors.grey[500],
+                            fontSize: 10,
+                            letterSpacing: 2,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -174,7 +263,7 @@ class CyberTextField extends StatelessWidget {
       children: [
         Text(
           label,
-          style: GoogleFonts.jetbrainsMono(
+          style: GoogleFonts.jetBrainsMono(
             fontSize: 9,
             color: Colors.grey[700],
             letterSpacing: 2,
@@ -184,10 +273,10 @@ class CyberTextField extends StatelessWidget {
         TextField(
           obscureText: isPassword,
           cursorColor: const Color(0xFF00E5FF),
-          style: GoogleFonts.jetbrainsMono(fontSize: 14),
+          style: GoogleFonts.jetBrainsMono(fontSize: 14),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: GoogleFonts.jetbrainsMono(color: Colors.grey[800], fontSize: 12),
+            hintStyle: GoogleFonts.jetBrainsMono(color: Colors.grey[800], fontSize: 12),
             enabledBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Color(0xFF222222)),
               borderRadius: BorderRadius.zero,
