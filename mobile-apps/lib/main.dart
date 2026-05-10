@@ -46,7 +46,6 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(const Duration(seconds: 4), () {
       if (mounted) {
-        // Cek jika user sudah login
         if (FirebaseAuth.instance.currentUser != null) {
           Navigator.pushReplacement(
             context,
@@ -72,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFF00E5FF).withOpacity(0.2)),
+                border: Border.all(color: const Color(0xFF00E5FF).withAlpha(50)),
                 color: const Color(0xFF111111),
               ),
               child: ColorFiltered(
@@ -87,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ).animate()
              .fadeIn(duration: 1.seconds)
              .scale(begin: const Offset(0.8, 0.8), curve: Curves.easeOutBack)
-             .shimmer(delay: 1.5.seconds, color: const Color(0xFF00E5FF).withOpacity(0.5)),
+             .shimmer(delay: 1.5.seconds, color: const Color(0xFF00E5FF).withAlpha(100)),
             const SizedBox(height: 30),
             Text(
               'INITIALIZING_SYSTEM...',
@@ -114,14 +113,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _isLoading = false;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<void> _signInWithGoogle() async {
     setState(() => _isLoading = true);
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-
-      if (googleAuth != null) {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
         final credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
