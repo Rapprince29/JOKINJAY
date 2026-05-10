@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 interface NavbarProps {
   variant?: "main" | "dashboard" | "admin" | "joki";
@@ -13,7 +14,13 @@ export default function Navbar({ variant = "main", userName, userRole }: NavbarP
     <nav className="cyber-nav w-full px-6 md:px-10 py-3 flex justify-between items-center">
       {/* Logo */}
       <Link href="/" className="flex items-center gap-3 group">
-        <div className="w-2 h-2 bg-[#00e5ff] group-hover:animate-ping" />
+        <Image
+          src="/logo.jpeg"
+          alt="JOKINJAY Logo"
+          width={32}
+          height={32}
+          className="object-contain invert group-hover:opacity-80 transition-opacity"
+        />
         <span className="font-mono font-black text-sm tracking-[0.2em] text-[#e4e4e4]">
           JOKI<span className="text-cyan">JAY</span>
         </span>
